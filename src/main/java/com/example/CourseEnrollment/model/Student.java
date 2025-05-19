@@ -10,24 +10,22 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private Set<Enrollment> enrollments = new HashSet<>();
 
     public Student() {
-    }
-    
 
-    public Student(Long id, String name, String email, Set<Enrollment> enrollments) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.enrollments = enrollments;
     }
-
+    public Student(Long id, String name, String email) {
+    this.id = id;
+    this.name = name;
+    this.email = email;
+}
     public Long getId() {
         return id;
     }
@@ -60,7 +58,4 @@ public class Student {
         this.enrollments = enrollments;
     }
 
-    
-
 }
-

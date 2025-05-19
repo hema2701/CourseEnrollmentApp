@@ -1,12 +1,17 @@
 package com.example.CourseEnrollment.dto;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
 
 public class EnrollmentDTO {
     private Long id;
+
     private Long studentId;
     private Long courseId;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate enrollmentDate;
+
     private String status;
 
     public EnrollmentDTO() {
@@ -60,4 +65,3 @@ public class EnrollmentDTO {
         this.status = status;
     }
 }
-

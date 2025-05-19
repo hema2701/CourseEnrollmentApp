@@ -20,11 +20,18 @@ public class Course {
     public Course() {
     }
 
-    public Course(Long id, String title, String description, Set<Enrollment> enrollments) {
+    // public Course(Long id, String title, String description, Set<Enrollment> enrollments) {
+    //     this.id = id;
+    //     this.title = title;
+    //     this.description = description;
+    //     this.enrollments = enrollments;
+    // }
+    
+
+    public Course(Long id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.enrollments = enrollments;
     }
 
     public Long getId() {
@@ -61,4 +68,3 @@ public class Course {
 
     
 }
-

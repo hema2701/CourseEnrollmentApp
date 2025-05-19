@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'kaviya1701/course-enrollment-app'
+        IMAGE_NAME = 'hema2701/course-enrollment'
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/kaviya17-01/SpringBootProject.git'
+                git branch: 'main', url: 'https://github.com/hema2701/CourseEnrollmentApp.git'
             }
         }
 
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Run Container (Optional)') {
             steps {
-                bat 'docker run -d -p 9090:8080 kaviya1701/course-enrollment-app'
+                bat 'docker run -d -p 9090:8081 hema2701/course-enrollment'
             }
         }
     }
