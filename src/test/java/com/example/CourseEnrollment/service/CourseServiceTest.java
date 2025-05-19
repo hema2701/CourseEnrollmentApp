@@ -69,10 +69,11 @@ class CourseServiceImplTest {
         CourseDTO result = courseService.updateCourse(1L, new CourseDTO(1L, "New", "New Desc"));
         assertEquals("New", result.getTitle());
     }
-
     @Test
-    void deleteCourse_shouldCallRepository() {
+        void deleteCourse_shouldCallRepository() {
+        doNothing().when(courseRepository).deleteById(1L);
         courseService.deleteCourse(1L);
-        verify(courseRepository).deleteById(1L);
+        verify(courseRepository, times(1)).deleteById(1L);
     }
+    
 }
