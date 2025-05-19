@@ -10,17 +10,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-// Interface
-
+//Interface
 public interface CourseService {
+    // For REST API
+    CourseDTO saveCourse(CourseDTO courseDTO);
+    CourseDTO updateCourse(Long id, CourseDTO courseDTO);
+    CourseDTO getCourseById(Long id);
     List<CourseDTO> getAllCourses();
-    CourseDTO getCourseById(Long id) throws ResourceNotFoundException;
-    CourseDTO createCourse(CourseDTO courseDTO);
-    CourseDTO updateCourse(Long id, CourseDTO courseDTO) throws ResourceNotFoundException;
-    void deleteCourse(Long id) throws ResourceNotFoundException;
-
-
+    void deleteCourse(Long id);
     // For Thymeleaf Web UI
     List<Course> getAllCoursesModel();
     Course getCourseByIdModel(Long id);
