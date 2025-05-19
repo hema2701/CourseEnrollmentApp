@@ -4,7 +4,6 @@ import com.example.CourseEnrollment.dto.CourseDTO;
 import com.example.CourseEnrollment.exception.ResourceNotFoundException;
 import com.example.CourseEnrollment.model.Course;
 import com.example.CourseEnrollment.repository.CourseRepository;
-//import com.example.CourseEnrollment.util.DTOMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -69,10 +68,4 @@ class CourseServiceImplTest {
         CourseDTO result = courseService.updateCourse(1L, new CourseDTO(1L, "New", "New Desc"));
         assertEquals("New", result.getTitle());
     }
-
-   // @Test
-    // void deleteCourse_shouldCallRepository() {
-    //     courseService.deleteCourse(1L);
-    //     verify(courseRepository).deleteById(1L);
-    // }
 }
