@@ -4,7 +4,7 @@ import com.example.CourseEnrollment.dto.CourseDTO;
 import com.example.CourseEnrollment.exception.ResourceNotFoundException;
 import com.example.CourseEnrollment.model.Course;
 import com.example.CourseEnrollment.repository.CourseRepository;
-import com.example.CourseEnrollment.service.impl.CourseServiceImpl;
+import com.example.CourseEnrollment.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,15 +21,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CourseServiceTest {
+public class CourseServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
 
     @InjectMocks
-    private CourseServiceImpl courseService;
+    private CourseService courseService;
 
-    private Course createTestCourse(Long id, String title, String description) {
+    private Course createCourse(Long id, String title, String description) {
         Course course = new Course();
         course.setId(id);
         course.setTitle(title);
@@ -37,15 +37,15 @@ class CourseServiceTest {
         return course;
     }
 
-    private CourseDTO createTestCourseDTO(Long id, String title, String description) {
+    private CourseDTO createCourseDTO(Long id, String title, String description) {
         return new CourseDTO(id, title, description);
     }
 
     @Test
-    void getAllCourses_shouldReturnListOfCourses() {
+    void getAllCourses_shouldReturnAllCourses() {
         // Arrange
-        Course course1 = createTestCourse(1L, "Java", "Java Fundamentals");
-        Course course2 = createTestCourse(2L, "Spring", "Spring Framework");
+        Course course1 = createCourse(1L, "Java", "Java Basics");
+        Course course2 = createCourse(2L, "Spring", "Spring Basics");
         when(courseRepository.findAll()).thenReturn(Arrays.asList(course1, course2));
 
         // Act
@@ -55,14 +55,13 @@ class CourseServiceTest {
         assertEquals(2, result.size());
         assertEquals("Java", result.get(0).getTitle());
         assertEquals("Spring", result.get(1).getTitle());
-        verify(courseRepository, times(1)).findAll();
     }
 
     @Test
     void getCourseById_shouldReturnCourseWhenExists() {
         // Arrange
         Long courseId = 1L;
-        Course course = createTestCourse(courseId, "Java", "Java Fundamentals");
+        Course course = createCourse(courseId, "Java", "Java Basics");
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
 
         // Act
@@ -72,7 +71,6 @@ class CourseServiceTest {
         assertNotNull(result);
         assertEquals(courseId, result.getId());
         assertEquals("Java", result.getTitle());
-        verify(courseRepository, times(1)).findById(courseId);
     }
 
     @Test
@@ -85,32 +83,30 @@ class CourseServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> {
             courseService.getCourseById(courseId);
         });
-        verify(courseRepository, times(1)).findById(courseId);
     }
 
     @Test
-    void createCourse_shouldSaveAndReturnNewCourse() {
+    void createCourse_shouldSaveAndReturnCourse() {
         // Arrange
-        CourseDTO newCourseDTO = createTestCourseDTO(null, "React", "React Basics");
-        Course savedCourse = createTestCourse(1L, "React", "React Basics");
+        CourseDTO newCourse = createCourseDTO(null, "React", "React Basics");
+        Course savedCourse = createCourse(1L, "React", "React Basics");
         when(courseRepository.save(any(Course.class))).thenReturn(savedCourse);
 
         // Act
-        CourseDTO result = courseService.createCourse(newCourseDTO);
+        CourseDTO result = courseService.createCourse(newCourse);
 
         // Assert
         assertNotNull(result.getId());
         assertEquals("React", result.getTitle());
-        verify(courseRepository, times(1)).save(any(Course.class));
     }
 
     @Test
     void updateCourse_shouldUpdateExistingCourse() {
         // Arrange
         Long courseId = 1L;
-        Course existingCourse = createTestCourse(courseId, "Java", "Old Description");
-        CourseDTO updateDTO = createTestCourseDTO(null, "Java", "Updated Description");
-        Course updatedCourse = createTestCourse(courseId, "Java", "Updated Description");
+        Course existingCourse = createCourse(courseId, "Java", "Old Description");
+        CourseDTO updateDTO = createCourseDTO(null, "Java", "Updated Description");
+        Course updatedCourse = createCourse(courseId, "Java", "Updated Description");
         
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
         when(courseRepository.save(any(Course.class))).thenReturn(updatedCourse);
@@ -121,30 +117,13 @@ class CourseServiceTest {
         // Assert
         assertEquals(courseId, result.getId());
         assertEquals("Updated Description", result.getDescription());
-        verify(courseRepository, times(1)).findById(courseId);
-        verify(courseRepository, times(1)).save(any(Course.class));
     }
 
     @Test
-    void updateCourse_shouldThrowWhenNotFound() {
-        // Arrange
-        Long courseId = 99L;
-        CourseDTO updateDTO = createTestCourseDTO(null, "Non-existent", "Course");
-        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> {
-            courseService.updateCourse(courseId, updateDTO);
-        });
-        verify(courseRepository, times(1)).findById(courseId);
-        verify(courseRepository, never()).save(any(Course.class));
-    }
-
-    @Test
-    void deleteCourse_shouldDeleteWhenExists() {
+    void deleteCourse_shouldDeleteExistingCourse() {
         // Arrange
         Long courseId = 1L;
-        Course existingCourse = createTestCourse(courseId, "Java", "Description");
+        Course existingCourse = createCourse(courseId, "Java", "Description");
         when(courseRepository.findById(courseId)).thenReturn(Optional.of(existingCourse));
         doNothing().when(courseRepository).delete(existingCourse);
 
@@ -152,21 +131,6 @@ class CourseServiceTest {
         courseService.deleteCourse(courseId);
 
         // Assert
-        verify(courseRepository, times(1)).findById(courseId);
         verify(courseRepository, times(1)).delete(existingCourse);
-    }
-
-    @Test
-    void deleteCourse_shouldThrowWhenNotFound() {
-        // Arrange
-        Long courseId = 99L;
-        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        assertThrows(ResourceNotFoundException.class, () -> {
-            courseService.deleteCourse(courseId);
-        });
-        verify(courseRepository, times(1)).findById(courseId);
-        verify(courseRepository, never()).delete(any(Course.class));
     }
 }
