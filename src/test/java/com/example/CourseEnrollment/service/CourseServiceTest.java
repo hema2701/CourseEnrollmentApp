@@ -1,8 +1,11 @@
 package com.example.CourseEnrollment.service;
 
+import com.example.CourseEnrollment.dto.CourseDTO;
 import com.example.CourseEnrollment.exception.ResourceNotFoundException;
 import com.example.CourseEnrollment.model.Course;
 import com.example.CourseEnrollment.repository.CourseRepository;
+import com.example.CourseEnrollment.service.impl.CourseServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,33 +25,42 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
 
     @InjectMocks
-    private CourseService courseService;
+    private CourseServiceImpl courseService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
+    private Course courseEntity(Long id, String title, String desc) {
+        return new Course(id, title, desc);
+    }
+
+    private CourseDTO courseDTO(Long id, String title, String desc) {
+        return new CourseDTO(id, title, desc);
+    }
+
     @Test
-    void getAllCourses_shouldReturnCourseList() {
-        Course c1 = new Course(1L, "Java", "Learn Java");
-        Course c2 = new Course(2L, "Python", "Learn Python");
+    void getAllCourses_shouldReturnCourseDTOList() {
+        Course c1 = courseEntity(1L, "Java", "Java Basics");
+        Course c2 = courseEntity(2L, "Spring", "Spring Intro");
+
         when(courseRepository.findAll()).thenReturn(Arrays.asList(c1, c2));
 
-        List<Course> result = courseService.getAllCourses();
+        List<CourseDTO> result = courseService.getAllCourses();
 
         assertEquals(2, result.size());
         assertEquals("Java", result.get(0).getTitle());
     }
 
     @Test
-    void getCourseById_shouldReturnCourse() {
-        Course course = new Course(1L, "Java", "Learn Java");
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+    void getCourseById_shouldReturnCourseDTO() {
+        Course c = courseEntity(1L, "Java", "Java Basics");
 
-        Course result = courseService.getCourseById(1L);
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(c));
 
-        assertNotNull(result);
+        CourseDTO result = courseService.getCourseById(1L);
+
         assertEquals("Java", result.getTitle());
     }
 
@@ -62,35 +74,38 @@ class CourseServiceTest {
     }
 
     @Test
-    void createCourse_shouldSaveAndReturnCourse() {
-        Course course = new Course(null, "Spring Boot", "Learn Spring Boot");
-        Course saved = new Course(1L, "Spring Boot", "Learn Spring Boot");
+    void createCourse_shouldReturnCreatedDTO() {
+        CourseDTO dto = courseDTO(null, "Spring Boot", "Backend course");
+        Course saved = courseEntity(1L, "Spring Boot", "Backend course");
 
-        when(courseRepository.save(course)).thenReturn(saved);
+        when(courseRepository.save(any(Course.class))).thenReturn(saved);
 
-        Course result = courseService.createCourse(course);
+        CourseDTO result = courseService.createCourse(dto);
 
         assertEquals(1L, result.getId());
         assertEquals("Spring Boot", result.getTitle());
     }
 
     @Test
-    void updateCourse_shouldModifyAndReturnCourse() {
-        Course existing = new Course(1L, "Java", "Old");
-        Course updated = new Course(1L, "Java", "Updated");
+    void updateCourse_shouldReturnUpdatedDTO() {
+        Course existing = courseEntity(1L, "Java", "Old Desc");
+        Course updated = courseEntity(1L, "Java", "New Desc");
+
+        CourseDTO updateDTO = courseDTO(null, "Java", "New Desc");
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(existing));
-        when(courseRepository.save(existing)).thenReturn(updated);
+        when(courseRepository.save(any(Course.class))).thenReturn(updated);
 
-        Course result = courseService.updateCourse(1L, updated);
+        CourseDTO result = courseService.updateCourse(1L, updateDTO);
 
-        assertEquals("Updated", result.getDescription());
+        assertEquals("New Desc", result.getDescription());
     }
 
     @Test
     void deleteCourse_shouldCallRepository() {
-        Course course = new Course(1L, "Java", "To Delete");
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        Course c = courseEntity(1L, "Java", "To delete");
+
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(c));
 
         courseService.deleteCourse(1L);
 
