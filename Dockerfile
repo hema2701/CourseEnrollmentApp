@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the Maven build output JAR into the container
 COPY target/CourseEnrollment-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port (must match your application.properties or default 8080)
+# Expose port (8081)
 EXPOSE 8081
 
 # Run the JAR file
