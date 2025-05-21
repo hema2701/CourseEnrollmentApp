@@ -20,20 +20,20 @@ public class StudentController {
 
     // --- HTML View Controllers (Thymeleaf) ---
 
-    @GetMapping
+    @GetMapping   // Get all students
     public String listStudents(Model model) {
         model.addAttribute("students", studentService.getAllStudents());
         model.addAttribute("student", new Student());
         return "students";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/add")  // Add new Student
     public String addStudent(@ModelAttribute("students") Student student) {  //
         studentService.createStudent(student);
         return "redirect:/students";
     }
 
-    @GetMapping("/edit/{id}")
+    @GetMapping("/edit/{id}") // Get Student by id
     public String editStudent(@PathVariable Long id, Model model) {
         StudentDTO existingStudent = studentService.getStudentById(id);
         model.addAttribute("student", existingStudent);
@@ -41,20 +41,20 @@ public class StudentController {
         return "students";
     }
 
-    @PostMapping("/update/{id}")                                         
+    @PostMapping("/update/{id}")   // Update by id                                
     public String updateStudent(@PathVariable Long id, @ModelAttribute("students") Student student) {
         student.setId(id);
         studentService.updateStudent(id, student);
         return "redirect:/students";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/delete/{id}")  // Delete Student
     public String deleteStudent(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return "redirect:/students";
     }
 
-    // --- REST API Controllers  ---
+    // --- REST API Controllers  ---------------------------------------------------
 
     @RestController
     @RequestMapping("/api/students")
@@ -63,30 +63,35 @@ public class StudentController {
         @Autowired
         private StudentService studentService;
 
+        // Add Student
         @PostMapping
         public ResponseEntity<StudentDTO> createStudent(@RequestBody StudentDTO studentDTO) {
             StudentDTO createdStudent = studentService.saveStudent(studentDTO);
             return ResponseEntity.status(201).body(createdStudent);
         }
-
+        
+        // Get Students by id
         @GetMapping("/{id}")
         public ResponseEntity<StudentDTO> getStudentById(@PathVariable Long id) {
             StudentDTO studentDTO = studentService.getStudentById(id);
             return ResponseEntity.ok(studentDTO);
         }
-
+        
+         // Get All Students   
         @GetMapping
         public ResponseEntity<List<StudentDTO>> getAllStudents() {
             List<StudentDTO> students = studentService.getAllStudents();
             return ResponseEntity.ok(students);
         }
-
+        
+        // Update Student by id
         @PutMapping("/{id}")
         public ResponseEntity<StudentDTO> updateStudent(@PathVariable Long id, @RequestBody StudentDTO studentDTO) {
             StudentDTO updatedStudent = studentService.updateStudent(id, studentDTO);
             return ResponseEntity.ok(updatedStudent);
         }
 
+        // Delete Student by id
         @DeleteMapping("/{id}")
         public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
             studentService.deleteStudent(id);
