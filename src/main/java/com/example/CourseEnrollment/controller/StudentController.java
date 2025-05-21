@@ -41,7 +41,7 @@ public class StudentController {
         return "students";
     }
 
-    @PostMapping("/update/{id}")                                         //
+    @PostMapping("/update/{id}")                                         
     public String updateStudent(@PathVariable Long id, @ModelAttribute("students") Student student) {
         student.setId(id);
         studentService.updateStudent(id, student);
