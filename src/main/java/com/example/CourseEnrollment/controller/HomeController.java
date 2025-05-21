@@ -25,6 +25,6 @@ public class HomeController {
         model.addAttribute("studentCount", studentService.getAllStudents().size());
         model.addAttribute("courseCount", courseService.getAllCourses().size());
         model.addAttribute("enrollmentCount", enrollmentService.getAllEnrollments().size());
-        return "home";
+         return "home";   // Home.html
     }
 }
