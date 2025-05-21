@@ -74,7 +74,7 @@ public class EnrollmentController {
         return "redirect:/enrollments";
     }
 
-    // -----REST APIs----
+    // -----REST APIs----------------------------------------------------------------
 
     @RestController
     @RequestMapping("/api/enrollments")
@@ -86,7 +86,7 @@ public class EnrollmentController {
         // REST API - Add Enrollment
         @PostMapping
         public ResponseEntity<EnrollmentDTO> enrollStudent(@RequestBody EnrollmentDTO enrollmentDTO) {
-            return ResponseEntity.status(201).body(enrollmentService.enrollStudent(enrollmentDTO));
+            return ResponseEntity.status(201).body(enrollmentService.enrollStudent(enrollmentDTO)); // HTTP status 201 for successful resource creation.
         }
 
         // REST API - Get All Enrollments
