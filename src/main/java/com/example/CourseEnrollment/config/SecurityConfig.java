@@ -14,11 +14,14 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**").permitAll() // Allow all REST endpoints
-                .anyRequest().authenticated()
+                .requestMatchers("/api/**").authenticated() // Secure all REST endpoint
             )
-            .httpBasic(Customizer.withDefaults()); // Basic auth if needed
+            .httpBasic(Customizer.withDefaults()); 
         return http.build();
     }
 }
+
+// .requestMatchers("/api/**").permitAll() // Allow all REST endpoints
+//                 .anyRequest().authenticated()
+
 
