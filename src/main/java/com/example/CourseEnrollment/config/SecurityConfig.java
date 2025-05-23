@@ -14,7 +14,9 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/**").authenticated() // Secure all REST endpoint
+                .requestMatchers("/", "/students", "/courses", "/enrollemnts", "/edit_enrollpage").permitAll() // Allow public access
+                .requestMatchers("/api/**").authenticated() // Protect APIs
+                .anyRequest().authenticated() // Everything else requires login
             )
             .httpBasic(Customizer.withDefaults()); 
         return http.build();
@@ -23,5 +25,6 @@ public class SecurityConfig {
 
 // .requestMatchers("/api/**").permitAll() // Allow all REST endpoints
 //                 .anyRequest().authenticated()
+               .anyRequest().authenticated()
 
 
