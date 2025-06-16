@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'hema2701/course-enrollment'
+        IMAGE_NAME = 'hemasree27/course-enrollment'
     }
 
     stages {
@@ -41,7 +41,7 @@ pipeline {
 
         stage('Run Container (Optional)') {
             steps {
-                bat 'docker run -d -p 9090:8081 hema2701/course-enrollment'
+                bat 'docker run -d -p 9090:8081 hemasree27/course-enrollment'
             }
         }
     }
